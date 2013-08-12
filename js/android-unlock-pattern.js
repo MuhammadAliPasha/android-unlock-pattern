@@ -9,8 +9,11 @@
 
 	var androidUnlockPattern = function() {
 
+		isDrawing:false;
+
 		var config = {
 			autostart: true,
+			ctx: document.getElementById("line").getContext("2d"),
 			container: '.pattern-unlock-container',
 			buttonClass: '.lock-button',
 			setPattern: '#setButton',
@@ -59,40 +62,46 @@
 
 				document.addEventListener('mousedown', function(e) {
 					if ( matches.call( e.target, config.buttonClass) ) {
-						console.log("Button Selected");
-						e.target.classList.add('touched');
+						helpers.startDrawing(e);
 					}
 				}, false);
 
 				document.addEventListener('mouseover', function(e) {
 					if ( matches.call( e.target, config.buttonClass) ) {
-						console.log("Button Moved");
+						helpers.connectDots(e);
 					}
 				}, false);
 
 				document.addEventListener('mouseup', function(e) {
 					if ( matches.call( e.target, config.buttonClass) ) {
-						console.log("Stop Selection");
+						console.log("Stop Selection" + e.target.id);
+						e.target.classList.add('touched');
+						androidUnlockPattern.isDrawing = false;
 					}
 				}, false);
 
-				// This is strictly for Mobile / Windows 8 touch machines / phones
+				// This is for Touch Devices
 				document.addEventListener('touchstart', function(e) {
 					if ( matches.call( e.target, config.buttonClass) ) {
-						console.log("Button Selected");
+						console.log("Button Selected" + e.target.id);
 						e.target.classList.add('touched');
 					}
 				}, false);
 
 				document.addEventListener('touchmove', function(e) {
 					if ( matches.call( e.target, config.buttonClass) ) {
-						console.log("Button Moved");
+						if(androidUnlockPattern.isDrawing) {
+							console.log("Button Moved" + e.target.id);
+							e.target.classList.add('touched');
+						}
 					}
 				}, false);
 
 				document.addEventListener('touchend', function(e) {
 					if ( matches.call( e.target, config.buttonClass) ) {
-						console.log("Stop Selection");
+						console.log("Stop Selection" + e.target.id);
+						e.target.classList.add('touched');
+						androidUnlockPattern.isDrawing = false;
 					}
 				}, false);
 				return this;
@@ -100,6 +109,7 @@
 		};
 
 		var helpers = {
+
 			generate: function(el) {
 				var buttonHolder = document.createElement("ul");
 				for (var i = 1; i < 10; i++) {
@@ -109,6 +119,26 @@
 					buttonHolder.appendChild(listButton);
 				};
 				el.appendChild(buttonHolder);
+			},
+
+			startDrawing: function(el) {
+				console.log("Button Selected" + el.target.id);
+				androidUnlockPattern.isDrawing = true;
+				el.target.classList.add('touched');
+			},
+
+			connectDots: function(el) {
+				if(androidUnlockPattern.isDrawing) {
+					console.log("Button Moved" + el.target.id);
+					console.log(el);
+					el.target.classList.add('touched');
+					config.ctx.beginPath();
+					config.ctx.moveTo(el.pageX, el.pageY);
+					config.ctx.lineTo(el.pageX, el.pageY);
+					config.ctx.strokeStyle = "#47abb2";
+					config.ctx.stroke();
+					config.ctx.closePath();
+				}
 			}
 		};
 		

@@ -54,3 +54,10 @@ body {
 .multiple{
 	background-image:url(../img/button_active_multiple.png);
 }
+
+#line {
+	position: absolute;
+	margin-left: 0;
+	margin-top: 25px;
+	z-index: 0;
+}
