@@ -13,6 +13,7 @@
 
 		var config = {
 			autostart: true,
+			needFirstPoint: true,
 			ctx: document.getElementById("line").getContext("2d"),
 			container: '.pattern-unlock-container',
 			buttonClass: '.lock-button',
@@ -130,14 +131,28 @@
 			connectDots: function(el) {
 				if(androidUnlockPattern.isDrawing) {
 					console.log("Button Moved" + el.target.id);
-					console.log(el);
+					console.log(el.pageX);
 					el.target.classList.add('touched');
-					config.ctx.beginPath();
-					config.ctx.moveTo(el.pageX, el.pageY);
-					config.ctx.lineTo(el.pageX, el.pageY);
-					config.ctx.strokeStyle = "#47abb2";
-					config.ctx.stroke();
-					config.ctx.closePath();
+					helpers.drawNextLine(config.ctx, el.pageX, el.pageY);
+					// config.ctx.beginPath();
+					// config.ctx.moveTo(el.pageX, el.pageY);
+					// config.ctx.lineTo(el.pageX, el.pageY);
+					// config.ctx.strokeStyle = "#47abb2";
+					// config.ctx.stroke();
+					// config.ctx.closePath();
+				}
+			},
+			drawNextLine: function(ctx, x, y) {
+				ctx.strokeStyle = "#47abb2";
+				if (config.needFirstPoint) {
+					ctx.lineWidth = 5;
+					ctx.beginPath();
+					ctx.moveTo(x, y);
+					config.needFirstPoint = false;
+				}
+				else {
+					ctx.lineTo(x, y);
+					ctx.stroke();
 				}
 			}
 		};
