@@ -63,6 +63,7 @@
 
 				document.addEventListener('mousedown', function(e) {
 					if ( matches.call( e.target, config.buttonClass) ) {
+						console.log(e);
 						helpers.startDrawing(e);
 					}
 				}, false);
@@ -112,18 +113,20 @@
 		var helpers = {
 
 			generate: function(el) {
-				// main container
+				// 
+				// All attempts with canvas failed so we had to resort to this
+				// 
 				var patternTag = document.createElement("div");
-				patternTag.className = "patternlockcontainer";
+				patternTag.className = "patternContainer";
 
 
 				// horizontal lines
 				var linesTag = document.createElement("div");
-				linesTag.className = "patternlocklineshorizontalcontainer";
+				linesTag.className = "horizontalContainer";
 				var elid=["12","23","45","56","78","89"];
 				for (var i=0;i<6;i++){
 					var lineTag = document.createElement("div");
-					lineTag.className = "patternlocklinehorizontal";
+					lineTag.className = "horizontalLine";
 					lineTag.id = "line" + elid[i];
 					linesTag.appendChild(lineTag);
 				}
@@ -131,11 +134,11 @@
 
 				// vertical lines
 				var linesTag = document.createElement("div");
-				linesTag.className = "patternlocklinesverticalcontainer";
+				linesTag.className = "verticalContainer";
 				var elid=["14","25","36","47","58","69"];
 				for (var i=0;i<6;i++){
 					var lineTag = document.createElement("div");
-					lineTag.className = "patternlocklinevertical";
+					lineTag.className = "verticalLine";
 					lineTag.id = "line" + elid[i];
 					linesTag.appendChild(lineTag);
 				}
@@ -143,21 +146,21 @@
 
 				// diagonal lines
 				var linesTag = document.createElement("div");
-				linesTag.className = "patternlocklinesdiagonalcontainer";
+				linesTag.className = "diagonalContainer";
 				var elid=["24","35","57","68"];
 				for (var i=0;i<4;i++){
 					var lineTag = document.createElement("div");
-					lineTag.className = "patternlocklinediagonalforward";
+					lineTag.className = "forwardDiagonal";
 					lineTag.id = "line" + elid[i];
 					linesTag.appendChild(lineTag);
 				}
 				patternTag.appendChild(linesTag);
 				var linesTag = document.createElement("div");
 				var elid=["15","26","48","59"];
-				linesTag.className = "patternlocklinesdiagonalcontainer";
+				linesTag.className = "diagonalContainer";
 				for (var i=0;i<4;i++){
 					var lineTag = document.createElement("div");
-					lineTag.className = "patternlocklinediagonalbackwards";
+					lineTag.className = "backwardDiagonal";
 					lineTag.id = "line" + elid[i];
 					linesTag.appendChild(lineTag);
 				}
@@ -167,7 +170,7 @@
 				for (var i = 1; i < 10; i++) {
 					var listButton = document.createElement("li");
 					listButton.className = "lock-button";
-					listButton.id = "line" + i;
+					listButton.id = "pattern-button" + i;
 					buttonHolder.appendChild(listButton);
 				};
 				patternTag.appendChild(buttonHolder);
@@ -177,32 +180,33 @@
 			startDrawing: function(el) {
 				console.log("Button Selected" + el.target.id);
 				androidUnlockPattern.isDrawing = true;
-				el.target.classList.add("patternlockbutton touched");
+				el.target.classList.add("pattern-button");
+				el.target.classList.add("touched");
 				androidUnlockPattern.from = "";
-				androidUnlockPattern.to = el.target.id.split("patternlockbutton").join("");
-				this.inputbox.value = androidUnlockPattern.to;
+				androidUnlockPattern.to = el.target.id.split("pattern-button").join("");
+				// this.inputbox.value = androidUnlockPattern.to;
 				this.startbutton = androidUnlockPattern.to;
 				return false;
 			},
 
 			connectDots: function(el) {
 				if(androidUnlockPattern.isDrawing) {
-					var thisbutton = el.target.id.split("patternlockbutton").join("");
+					var thisbutton = el.target.id.split("pattern-button").join("");
 			
 					if(thisbutton != androidUnlockPattern.to){ // touching the same button twice in a row is not allowed (should it ?)
 			
 						var cn = el.target.className;
 						if(cn.indexOf('touched')<0){
-							el.target.className = "patternlockbutton touched"
+							el.target.className = "pattern-button touched"
 						}else{
-							el.target.className = "patternlockbutton touched multiple"
+							el.target.className = "pattern-button touched multiple"
 						}
 					
-						androidUnlockPattern.from = patternlock.to;
+						androidUnlockPattern.from = androidUnlockPattern.to;
 						androidUnlockPattern.to = thisbutton;
 						
 						//update input value
-						this.inputbox.value += androidUnlockPattern.to;
+						// this.inputbox.value += androidUnlockPattern.to;
 						
 						// display line between 2 buttons 
 						var thisline = document.getElementById("line" + androidUnlockPattern.from + androidUnlockPattern.to);
@@ -215,6 +219,49 @@
 					}
 				}
 				return(false);
+			},
+
+			buttontouchmove:function(el){
+				if(el.target.touches.length == 1){
+					var touch = el.target.touches[0];
+								
+					// find position relative to first button
+					var b1 = document.getElementById("pattern-button1");
+					var b2 = document.getElementById("pattern-button2");
+					var p = helpers.findPos(b1);
+					var p2 = helpers.findPos(b2);
+					var cox = parseInt(touch.pageX) - parseInt(p[0])
+					var coy = parseInt(touch.pageY) - parseInt(p[1])
+					var gridsize =  p2[0] - p[0] // bit stupid no ?
+					
+				
+					// on what button are we over now?
+					// grid 3x3 to sequential nummber
+					var buttonnr = Math.min(2,Math.max(0,Math.floor(cox/gridsize))) + (Math.min(2,Math.max(0,Math.floor(coy/gridsize)))*3) + 1;
+									
+					if (buttonnr != androidUnlockPattern.to){
+						// only trigger if the touch is near the middle of the button
+						// otherwise diagonal moves are impossible
+						var distancex = (cox % gridsize);
+						var distancey = (coy % gridsize);
+						if ((distancex< (gridsize/2)) && (distancey < (gridsize/2))){
+							// we're over a new button
+							var newbutton = document.getElementById("pattern-button" + buttonnr)
+							androidUnlockPattern.connectDots(newbutton);
+						}			
+					}
+				}
+			},
+
+			findPos: function(obj) {
+				var curleft = curtop = 0;
+				if (obj.offsetParent) {
+					do {
+						curleft += obj.offsetLeft;
+						curtop += obj.offsetTop;
+					} while (obj = obj.offsetParent);
+					return [curleft,curtop];
+				}
 			}
 		};
 		
