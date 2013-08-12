@@ -55,9 +55,71 @@ body {
 	background-image:url(../img/button_active_multiple.png);
 }
 
-#line {
-	position: absolute;
-	margin-left: 0;
-	margin-top: 25px;
-	z-index: 0;
+
+
+.patternlocklinehorizontal{
+	background-image:url(../img/line_hor.png);
+	background-repeat:no-repeat;
+	height:83px;
+	width:53px;
+	display:block;
+	float:left;
+	margin:20px -33px -17px 64px;
+	visibility:hidden;
+}
+
+.patternlocklinevertical{
+	background-image:url(../img/line_ver.png);
+	background-repeat:no-repeat;
+	height:53px;
+	width:83px;
+	display:block;
+	float:left;
+	margin:53px -26px -16px 27px;
+	visibility:hidden;
+}
+
+.patternlocklinediagonalforward{
+	background-image:url(../img/line_diagonal1.png);
+	background-repeat:no-repeat;
+	height:83px;
+	width:83px;
+	display:block;
+	float:left;
+	margin:26px -26px -24px 26px;
+	visibility:hidden;
+}
+
+.patternlocklinediagonalbackwards{
+	background-image:url(../img/line_diagonal2.png);
+	background-repeat:no-repeat;
+	height:83px;
+	width:83px;
+	display:block;
+	float:left;
+	margin:26px -26px -24px 26px;
+	visibility:hidden;
+}
+
+.patternlockbuttoncontainer{
+	position:absolute;
+	width:300px;
+}
+
+.patternlocklineshorizontalcontainer{
+	position:absolute;
+	width:250px;
+	padding:22px;
+}
+
+.patternlocklinesverticalcontainer{
+	position:absolute;
+	width:260px;
+	padding:22px;
+}
+
+.patternlocklinesdiagonalcontainer{
+	position:absolute;
+	width:240px;
+	padding:22px;
 }

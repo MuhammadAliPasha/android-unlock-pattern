@@ -5,16 +5,16 @@
  */
 
 (function(undefined) {
-	"use strict"
+	// "use strict"
 
 	var androidUnlockPattern = function() {
 
 		isDrawing:false;
+		from:"";
+		to:"";
 
 		var config = {
 			autostart: true,
-			needFirstPoint: true,
-			ctx: document.getElementById("line").getContext("2d"),
 			container: '.pattern-unlock-container',
 			buttonClass: '.lock-button',
 			setPattern: '#setButton',
@@ -112,6 +112,57 @@
 		var helpers = {
 
 			generate: function(el) {
+				// main container
+				var patternTag = document.createElement("div");
+				patternTag.className = "patternlockcontainer";
+
+
+				// horizontal lines
+				var linesTag = document.createElement("div");
+				linesTag.className = "patternlocklineshorizontalcontainer";
+				var elid=["12","23","45","56","78","89"];
+				for (var i=0;i<6;i++){
+					var lineTag = document.createElement("div");
+					lineTag.className = "patternlocklinehorizontal";
+					lineTag.id = "line" + elid[i];
+					linesTag.appendChild(lineTag);
+				}
+				patternTag.appendChild(linesTag);
+
+				// vertical lines
+				var linesTag = document.createElement("div");
+				linesTag.className = "patternlocklinesverticalcontainer";
+				var elid=["14","25","36","47","58","69"];
+				for (var i=0;i<6;i++){
+					var lineTag = document.createElement("div");
+					lineTag.className = "patternlocklinevertical";
+					lineTag.id = "line" + elid[i];
+					linesTag.appendChild(lineTag);
+				}
+				patternTag.appendChild(linesTag);
+
+				// diagonal lines
+				var linesTag = document.createElement("div");
+				linesTag.className = "patternlocklinesdiagonalcontainer";
+				var elid=["24","35","57","68"];
+				for (var i=0;i<4;i++){
+					var lineTag = document.createElement("div");
+					lineTag.className = "patternlocklinediagonalforward";
+					lineTag.id = "line" + elid[i];
+					linesTag.appendChild(lineTag);
+				}
+				patternTag.appendChild(linesTag);
+				var linesTag = document.createElement("div");
+				var elid=["15","26","48","59"];
+				linesTag.className = "patternlocklinesdiagonalcontainer";
+				for (var i=0;i<4;i++){
+					var lineTag = document.createElement("div");
+					lineTag.className = "patternlocklinediagonalbackwards";
+					lineTag.id = "line" + elid[i];
+					linesTag.appendChild(lineTag);
+				}
+				patternTag.appendChild(linesTag);
+
 				var buttonHolder = document.createElement("ul");
 				for (var i = 1; i < 10; i++) {
 					var listButton = document.createElement("li");
@@ -119,41 +170,51 @@
 					listButton.id = "line" + i;
 					buttonHolder.appendChild(listButton);
 				};
-				el.appendChild(buttonHolder);
+				patternTag.appendChild(buttonHolder);
+				el.appendChild(patternTag);
 			},
 
 			startDrawing: function(el) {
 				console.log("Button Selected" + el.target.id);
 				androidUnlockPattern.isDrawing = true;
-				el.target.classList.add('touched');
+				el.target.classList.add("patternlockbutton touched");
+				androidUnlockPattern.from = "";
+				androidUnlockPattern.to = el.target.id.split("patternlockbutton").join("");
+				this.inputbox.value = androidUnlockPattern.to;
+				this.startbutton = androidUnlockPattern.to;
+				return false;
 			},
 
 			connectDots: function(el) {
 				if(androidUnlockPattern.isDrawing) {
-					console.log("Button Moved" + el.target.id);
-					console.log(el.pageX);
-					el.target.classList.add('touched');
-					helpers.drawNextLine(config.ctx, el.pageX, el.pageY);
-					// config.ctx.beginPath();
-					// config.ctx.moveTo(el.pageX, el.pageY);
-					// config.ctx.lineTo(el.pageX, el.pageY);
-					// config.ctx.strokeStyle = "#47abb2";
-					// config.ctx.stroke();
-					// config.ctx.closePath();
+					var thisbutton = el.target.id.split("patternlockbutton").join("");
+			
+					if(thisbutton != androidUnlockPattern.to){ // touching the same button twice in a row is not allowed (should it ?)
+			
+						var cn = el.target.className;
+						if(cn.indexOf('touched')<0){
+							el.target.className = "patternlockbutton touched"
+						}else{
+							el.target.className = "patternlockbutton touched multiple"
+						}
+					
+						androidUnlockPattern.from = patternlock.to;
+						androidUnlockPattern.to = thisbutton;
+						
+						//update input value
+						this.inputbox.value += androidUnlockPattern.to;
+						
+						// display line between 2 buttons 
+						var thisline = document.getElementById("line" + androidUnlockPattern.from + androidUnlockPattern.to);
+						if (androidUnlockPattern.to <  androidUnlockPattern.from){
+							thisline = document.getElementById("line" + androidUnlockPattern.to + androidUnlockPattern.from);
+						}
+						if (thisline){
+							thisline.style.visibility = 'visible';
+						}
+					}
 				}
-			},
-			drawNextLine: function(ctx, x, y) {
-				ctx.strokeStyle = "#47abb2";
-				if (config.needFirstPoint) {
-					ctx.lineWidth = 5;
-					ctx.beginPath();
-					ctx.moveTo(x, y);
-					config.needFirstPoint = false;
-				}
-				else {
-					ctx.lineTo(x, y);
-					ctx.stroke();
-				}
+				return(false);
 			}
 		};
 		
