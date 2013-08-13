@@ -6,23 +6,23 @@ There are other examples of implementing the pattern unlock using Javascript, bu
 
 ### Objective
 
-- [ ] Create an unlock pattern on the grid.
+-[ ] Create an unlock pattern on the grid.
 
-- [ ] Try and use Canvas to show lines between the circles
+-[ ] Try and use Canvas to show lines between the circles
 
-- [ ] Create circles out of pure CSS
+-[ ] Create circles out of pure CSS
 
-- [ ] Try and not use images at all
+-[ ] Try and not use images at all
 
-- [ ] Do this only using Vanilla JS
+-[ ] Do this only using Vanilla JS
 
-- [ ] Use localstorage shims to fallback to a database / cookie based storage solution
+-[ ] Use localstorage shims to fallback to a database / cookie based storage solution
 
-- [ ] Make it cross browser compatible IE7 onwards.
+-[ ] Make it cross browser compatible IE7 onwards.
 
-- [ ] Allow configuration changes on the page itself. 
+-[ ] Allow configuration changes on the page itself. 
 
-- [ ] Have different themes
+-[ ] Have different themes
 
 ### Why
 
