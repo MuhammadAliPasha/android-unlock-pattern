@@ -35,7 +35,6 @@ body {
 .pattern-unlock-container ul {
 	margin: 0;
 	padding: 20px 0 0 23px;
-	position: absolute;
 }
 
 .lock-button{
@@ -54,73 +53,4 @@ body {
 
 .multiple{
 	background-image:url(../img/button_active_multiple.png);
-}
-
-
-
-.horizontalLine{
-	background-image:url(../img/line_hor.png);
-	background-repeat:no-repeat;
-	height:83px;
-	width:53px;
-	display:block;
-	float:left;
-	margin:20px -33px -17px 64px;
-	visibility:hidden;
-}
-
-.verticalLine{
-	background-image:url(../img/line_ver.png);
-	background-repeat:no-repeat;
-	height:53px;
-	width:83px;
-	display:block;
-	float:left;
-	margin:53px -26px -16px 27px;
-	visibility:hidden;
-}
-
-.forwardDiagonal{
-	background-image:url(../img/line_diagonal1.png);
-	background-repeat:no-repeat;
-	height:83px;
-	width:83px;
-	display:block;
-	float:left;
-	margin:38px -36px -27px 44px;
-	visibility:hidden;
-}
-
-.backwardDiagonal{
-	background-image:url(../img/line_diagonal2.png);
-	background-repeat:no-repeat;
-	height:83px;
-	width:83px;
-	display:block;
-	float:left;
-	margin:38px -36px -27px 44px;
-	visibility:hidden;
-}
-
-.patternContainer{
-	position:absolute;
-	width:300px;
-}
-
-.horizontalContainer{
-	position:absolute;
-	width:250px;
-	padding:22px;
-}
-
-.verticalContainer{
-	position:absolute;
-	width:260px;
-	padding:22px;
-}
-
-.diagonalContainer{
-	position:absolute;
-	width:240px;
-	padding:22px;
 }
