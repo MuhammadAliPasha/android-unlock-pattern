@@ -47,10 +47,18 @@ body {
 	margin:16px;
 }
 
-.touched{
+.touched {
 	background-image:url(../img/button_active.png);
 }
 
-.multiple{
+.multiple {
 	background-image:url(../img/button_active_multiple.png);
+}
+
+#line-canvas {
+	border: 1px solid #ff0000;
+	margin-left: 50px;
+	margin-top: 25px;
+	position: absolute;
+	z-index: 0;
 }

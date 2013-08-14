@@ -13,10 +13,17 @@
 
 		var config = {
 			autostart: true,
+			canvas: document.getElementById("line-canvas"),
 			container: '.pattern-unlock-container',
 			buttonClass: '.lock-button',
 			setPattern: '#setButton',
-			unlockPattern: '#checkButton'
+			unlockPattern: '#checkButton',
+			defaultColor: "#000",
+			defaultShape: "round",
+			defaultWidth: 5,
+			clickX: [],
+			clickY: [],
+			clickDrag: []
 		};
 
 		var ui = {
@@ -80,6 +87,21 @@
 				}, false);
 
 				return this;
+			},
+
+			redraw: function(context) {
+				for(var i = 0; i < config.clickX.length; i++) {
+					context.beginPath();
+					console.log(context);
+					if(config.clickDrag[i] && i) {
+						context.moveTo(config.clickX[i-1], config.clickY[i-1]);
+					} else {
+						context.moveTo(config.clickX[i]-1, config.clickY[i]);
+					}
+					context.lineTo(config.clickX[i], config.clickY[i]);
+					context.closePath();
+					context.stroke();
+				}
 			}
 		};
 
@@ -101,19 +123,34 @@
 				console.log("Button Selected" + el.target.id);
 				androidUnlockPattern.isDrawing = true;
 				el.target.classList.add("touched");
+
+				var ctx = config.canvas.getContext("2d");
+				ctx.strokeStyle = config.defaultColor;
+				ctx.lineJoin = config.defaultShape;
+				ctx.lineWidth = config.defaultWidth;
+
+				helpers.addClick(el.pageX, el.pageY);
+				ui.redraw(ctx);
 			},
 
 			connectDots: function(el) {
 				if(androidUnlockPattern.isDrawing) {
 					console.log("Button Moved" + el.target.id);
 					el.target.classList.add('touched');
-					// config.ctx.beginPath();
-					// config.ctx.moveTo(el.pageX, el.pageY);
-					// config.ctx.lineTo(el.pageX, el.pageY);
-					// config.ctx.strokeStyle = "#47abb2";
-					// config.ctx.stroke();
-					// config.ctx.closePath();
+					var ctx = config.canvas.getContext("2d");
+					ctx.strokeStyle = config.defaultColor;
+					ctx.lineJoin = config.defaultShape;
+					ctx.lineWidth = config.defaultWidth;
+
+					helpers.addClick(el.pageX, el.pageY, true);
+					ui.redraw(ctx);
 				}
+			},
+
+			addClick: function(x, y, dragging) {
+				config.clickX.push(x);
+				config.clickY.push(y);
+				config.clickDrag.push(dragging);
 			}
 		};
 		
